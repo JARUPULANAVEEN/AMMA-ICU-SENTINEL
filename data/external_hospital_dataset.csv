@@ -1,0 +1,5 @@
+timestamp,hospital_name,patient_id,patient_name,hr,spo2,sys_bp,dia_bp,rr,sqi,condition_notes
+2026-08-20 08:30:00,City General Hospital,P-901,Alexander Fleming,78,97,125,82,16,95,Stable ICU Telemetry
+2026-08-20 08:31:00,City General Hospital,P-902,Beatrix Potter,88,94,138,88,19,92,Post-Surgical Monitoring
+2026-08-20 08:32:00,St. Jude Memorial,P-903,Charles Darwin,112,91,155,98,22,89,Hypertensive Crisis Observation
+2026-08-20 08:33:00,St. Jude Memorial,P-904,Diana Prince,64,99,115,75,14,99,Normal Cardiac Baseline

@@ -1,0 +1,108 @@
+timestamp,record_type,bed_id,patient_name,hr,spo2,sys_bp,dia_bp,rr,sqi,staff_username,staff_name,staff_role,event_description
+2026-09-25 13:25:52,VERIFIED_CSV_SAVE,101,John Doe,75,98,120,80,16,95,doctor,Dr. Sarah Jenkins,doctor,Direct CSV write verification test
+2026-09-25 13:28:08,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:28:10,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 13:28:18,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 13:28:19,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 13:28:26,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,chitu,chitu,nurse,Clinician chitu (nurse) performed LOG IN
+2026-09-25 13:28:29,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,30,98,120,80,16,15,chitu,chitu,nurse,CUSTOM VITAL THRESHOLD VIOLATION: Manual vital adjustment triggered threshold breach: HR 30 BPM (Min 50).
+2026-09-25 13:28:31,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,30,98,120,80,16,15,chitu,chitu,nurse,EMERGENCY DISPATCH ACKNOWLEDGED: Clinician reviewed and acknowledged emergency alarm dispatch window
+2026-09-25 13:28:33,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,chitu,chitu,nurse,Clinician chitu (nurse) performed LOG OUT
+2026-09-25 13:36:24,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:38:06,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:38:08,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 13:38:17,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 13:38:22,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 13:38:24,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:45:02,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 13:45:04,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:45:06,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 13:45:13,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 13:45:33,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 13:45:36,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 13:50:12,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:56:52,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:57:08,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 13:57:10,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 13:57:11,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 13:57:18,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 14:32:43,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 14:32:45,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 14:33:21,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 14:34:04,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 14:34:29,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 14:42:39,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 14:44:22,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 14:44:34,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 14:44:58,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 14:45:15,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 14:48:09,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 15:13:58,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 15:14:03,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 15:14:15,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 15:22:15,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 15:22:26,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 15:24:56,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 15:36:24,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 15:43:29,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 15:43:31,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 15:44:34,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 15:49:01,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 15:50:05,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 15:51:10,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 15:53:49,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 15:53:50,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:00:56,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:03:38,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:04:18,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:04:25,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 16:04:50,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:06:25,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:06:29,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:07:07,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:07:17,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:13:23,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:13:55,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:19:02,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:19:03,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:26:47,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,72,82,120,80,16,34,admin,Admin - AMMA ICU SENTINEL,admin,CUSTOM VITAL THRESHOLD VIOLATION: Manual vital adjustment triggered threshold breach: SpO₂ 82% (Min 90%).
+2026-09-25 16:26:48,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,72,82,120,80,16,34,admin,Admin - AMMA ICU SENTINEL,admin,EMERGENCY DISPATCH ACKNOWLEDGED: Clinician reviewed and acknowledged emergency alarm dispatch window
+2026-09-25 16:31:26,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:31:30,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:31:42,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:31:49,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 16:32:01,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 16:32:04,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 16:32:05,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 16:32:07,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:34:20,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:34:25,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:38:19,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:38:29,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:39:00,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:39:06,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:39:28,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:39:30,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:39:33,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:39:35,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:40:04,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:40:05,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:40:11,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,108,96,175,105,16,96,admin,Admin - AMMA ICU SENTINEL,admin,"BLOOD PRESSURE SURGE BREACH (175/105): Blood Pressure spiked to 175/105 mmHg, exceeding set upper safety limit (140/90 mmHg) by +35 mmHg."
+2026-09-25 16:40:13,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,108,96,175,105,16,96,admin,Admin - AMMA ICU SENTINEL,admin,EMERGENCY DISPATCH ACKNOWLEDGED: Clinician reviewed and acknowledged emergency alarm dispatch window
+2026-09-25 16:41:42,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:41:47,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:43:43,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:43:48,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:43:54,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:43:55,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:50:30,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,30,98,120,80,16,15,admin,Admin - AMMA ICU SENTINEL,admin,CUSTOM VITAL THRESHOLD VIOLATION: Manual vital adjustment triggered threshold breach: HR 30 BPM (Min 50).
+2026-09-25 16:50:31,TELEMETRY_EVENT,901,BED 901 • Alexander Fleming,30,98,120,80,16,15,admin,Admin - AMMA ICU SENTINEL,admin,EMERGENCY DISPATCH ACKNOWLEDGED: Clinician reviewed and acknowledged emergency alarm dispatch window
+2026-09-25 16:50:56,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:51:00,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 16:51:04,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
+2026-09-25 16:51:13,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 16:51:45,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 16:51:50,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG IN
+2026-09-25 17:14:16,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,naveen,naveen,doctor,Clinician naveen (doctor) performed LOG OUT
+2026-09-25 17:14:19,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG IN
+2026-09-25 17:14:31,TELEMETRY_EVENT,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,admin,Admin - AMMA ICU SENTINEL,admin,Clinician Admin - AMMA ICU SENTINEL (admin) performed LOG OUT
