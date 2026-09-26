@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMMA ICU SENTINEL - ICU Smart Alarm & Clinical CDS Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Full-Screen AMMA ICU SENTINEL Authentication Portal (Login Page) -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="amma_hospital_logo_transparent.png" alt="AMMA ICU SENTINEL Logo" class="login-amma-logo">
+                <h2>AMMA ICU SENTINEL</h2>
+                <p class="login-subtitle">ICU Smart Alarm & Clinical Decision Support Portal</p>
+                <div class="login-badge"><i class="fa-solid fa-shield-halved"></i> Secure Clinical Login</div>
+            </div>
+
+            <form class="login-form" id="loginForm" onsubmit="event.preventDefault(); loginUser();">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-user"></i> Username or Employee ID</label>
+                    <input type="text" id="loginUsername" value="admin" placeholder="Username or Employee ID" required autocomplete="username">
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fa-solid fa-lock"></i> Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" value="amma123" placeholder="Password" required autocomplete="current-password">
+                        <button type="button" class="btn-toggle-password" id="btnTogglePassword" onclick="togglePasswordVisibility()" title="Click to show/hide password">
+                            <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="forgot-pass-row">
+                    <a href="#" class="forgot-password-link" onclick="event.preventDefault(); alert('Please contact AMMA ICU SENTINEL IT Administrator (admin@ammahospital.org / +1-555-0100) to reset your password.');">Forgot password?</a>
+                </div>
+
+                <div class="login-error hidden" id="loginError">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>Invalid Username or Password. Please check your credentials.</span>
+                </div>
+
+                <button type="submit" class="btn btn-login">
+                    <i class="fa-solid fa-shield-halved"></i> Sign In Securely
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <i class="fa-solid fa-lock"></i> Protected clinical access.
+            </div>
+        </div>
+    </div>
+
+    <!-- Standalone AMMA ICU SENTINEL Admin Control Console (Admin Only View) -->
+    <div class="admin-console-overlay hidden" id="adminConsoleOverlay">
+        <header class="admin-console-nav">
+            <div class="brand">
+                <img src="amma_hospital_logo_transparent.png" alt="AMMA ICU SENTINEL Logo" class="header-hospital-logo">
+                <div class="brand-text">
+                    <h1>AMMA ICU SENTINEL <span class="version-badge admin-badge">Admin Control Console</span></h1>
+                    <span class="sub-title">Staff Credentials Management & System Security Authorization</span>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <button class="btn-icon" onclick="toggleThemeMode()" title="Toggle Dark / Light Theme Mode">
+                    <i class="fa-solid fa-moon text-cyan" id="adminThemeIcon"></i>
+                </button>
+                <div class="user-profile-badge">
+                    <i class="fa-solid fa-user-shield text-amber"></i>
+                    <span>Admin - System Security</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="toggleAdminICUView()" title="View Live ICU Telemetry Dashboard as Admin">
+                    <i class="fa-solid fa-desktop"></i> View Live ICU Telemetry
+                </button>
+                <button class="btn btn-logout" onclick="logoutUser()" title="Logout from AMMA ICU SENTINEL">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <main class="admin-console-content">
+            <div class="settings-container">
+                <!-- Admin Staff ID Generator Card -->
+                <div class="settings-card admin-card">
+                    <div class="admin-card-header">
+                        <i class="fa-solid fa-user-plus text-amber fa-xl"></i>
+                        <div>
+                            <h3>Create & Register New Doctor / Nurse Staff ID</h3>
+                            <p class="settings-desc">Authorized Admin Portal: Enter the new doctor's or nurse's details below to generate their login credentials. Hand over the generated ID and password to the staff member so they can log in.</p>
+                        </div>
+                    </div>
+
+                    <!-- Admin Success Toast -->
+                    <div class="toast-success hidden" id="adminToast">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span id="adminToastText">New Staff ID Created Successfully!</span>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-id-card"></i> Staff Full Name & Designation</label>
+                            <input type="text" class="form-control" value="Dr. Rajesh Kumar, MD" placeholder="e.g. Dr. Rajesh Kumar, MD or Nurse Anita, RN" id="newStaffName">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user-tag"></i> Clinical Role</label>
+                            <select class="form-control" id="newStaffRole">
+                                <option value="doctor" selected>Doctor (Attending / Specialist)</option>
+                                <option value="nurse">Nurse (Staff / Charge Nurse)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user"></i> Desired Login Username / ID</label>
+                            <input type="text" class="form-control" value="dr_rajesh" placeholder="e.g. dr_rajesh or nurse_anita" id="newStaffUser">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-key"></i> Assign Security Password</label>
+                            <input type="text" class="form-control" value="doctor123" id="newStaffPass">
+                        </div>
+
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label><i class="fa-solid fa-phone"></i> Emergency Phone / Pager ID (for SMS Alerts)</label>
+                            <input type="text" class="form-control" value="+1 (555) 018-9920" placeholder="e.g. +1 (555) 018-9920" id="newStaffPhone">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-emerald mt-16" onclick="createNewStaffID()">
+                        <i class="fa-solid fa-user-plus"></i> Create & Activate Staff ID in AMMA System
+                    </button>
+
+                    <!-- Doctor Credentials Handover Card -->
+                    <div class="credentials-handover-box hidden" id="credentialsHandoverCard">
+                        <div class="handover-title"><i class="fa-solid fa-id-card-clip text-amber"></i> AMMA ICU SENTINEL DOCTOR CREDENTIALS HANDOVER CARD</div>
+                        <div class="handover-body">
+                            <div class="h-row"><span>Doctor Full Name:</span> <strong id="hDocName">Dr. Rajesh Kumar, MD</strong></div>
+                            <div class="h-row"><span>Login Username ID:</span> <code id="hDocUser">dr_rajesh</code></div>
+                            <div class="h-row"><span>Assigned Password:</span> <code id="hDocPass">doctor123</code></div>
+                            <div class="h-row"><span>Hospital Role:</span> <span class="role-badge-doc" id="hRoleBadge">DOCTOR</span></div>
+                            <div class="h-row"><span>Account Status:</span> <strong class="text-emerald"><i class="fa-solid fa-circle-check"></i> ACTIVATED & READY FOR LOGIN</strong></div>
+                        </div>
+                        <p class="handover-note"><i class="fa-solid fa-circle-info text-cyan"></i> Give the Username ID and Password above to the new Doctor. They can log in immediately from the AMMA ICU SENTINEL Login Screen!</p>
+                    </div>
+                <!-- Live On-Duty Staff Roster Card -->
+                <div class="settings-card admin-card mt-16">
+                    <div class="admin-card-header">
+                        <i class="fa-solid fa-user-clock text-cyan fa-xl"></i>
+                        <div>
+                            <h3>AMMA ICU SENTINEL Current On-Duty Clinicians Roster</h3>
+                            <p class="settings-desc">Live overview of doctors and nurses currently assigned to active ICU beds (Beds 101–104):</p>
+                        </div>
+                    </div>
+
+                    <div class="duty-roster-grid">
+                        <div class="duty-roster-card doc-duty">
+                            <div class="d-header">
+                                <i class="fa-solid fa-user-doctor text-amber fa-lg"></i>
+                                <div>
+                                    <strong id="adminDutyDocName">Dr. Sarah Jenkins, MD</strong>
+                                    <span class="d-sub">Attending On-Call Physician • ICU Telemetry</span>
+                                </div>
+                                <span class="status-badge active"><i class="fa-solid fa-circle-dot"></i> ON DUTY</span>
+                            </div>
+                            <div class="d-details mt-10">
+                                <div><span>Direct Phone / Pager:</span> <strong id="adminDutyDocPhone" class="text-cyan">+1 (555) 019-2834</strong></div>
+                                <div><span>Assigned ICU Coverage:</span> <strong>Cardiac & Surgical ICU (Beds 101 - 104)</strong></div>
+                                <div><span>Emergency SMS Dispatch:</span> <strong class="text-emerald"><i class="fa-solid fa-check"></i> ACTIVE DISPATCH READY</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="duty-roster-card nurse-duty">
+                            <div class="d-header">
+                                <i class="fa-solid fa-user-nurse text-cyan fa-lg"></i>
+                                <div>
+                                    <strong id="adminDutyNurseName">Nurse Emily Watson, RN</strong>
+                                    <span class="d-sub">Duty Charge Nurse • Unit B ICU</span>
+                                </div>
+                                <span class="status-badge active"><i class="fa-solid fa-circle-dot"></i> ON DUTY</span>
+                            </div>
+                            <div class="d-details mt-10">
+                                <div><span>Pager ID / Mobile:</span> <strong id="adminDutyNursePhone" class="text-cyan">+1 (555) 014-9921</strong></div>
+                                <div><span>Assigned ICU Coverage:</span> <strong>Unit B - Beds 101 - 104</strong></div>
+                                <div><span>Push Alert Receiver:</span> <strong class="text-emerald"><i class="fa-solid fa-check"></i> ACTIVE PUSH READY</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registered Staff Directory Table -->
+                <div class="settings-card mt-16">
+                    <h3><i class="fa-solid fa-users text-cyan"></i> AMMA ICU SENTINEL Authorized Doctor & Staff Directory</h3>
+                    <p class="settings-desc">All active doctors, nurses, and staff registered in the hospital system:</p>
+
+                    <div class="table-responsive">
+                        <table class="staff-table" id="tableStaffDirectory">
+                            <thead>
+                                <tr>
+                                    <th>Username ID</th>
+                                    <th>Full Name</th>
+                                    <th>Role</th>
+                                    <th>Emergency Phone</th>
+                                    <th>Password</th>
+                                    <th>Last Login Time</th>
+                                    <th>Last Logout Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffDirectoryBody">
+                                <!-- Dynamic staff list injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Clinician Login & Logout Access Audit Trail Card -->
+                <div class="settings-card admin-card mt-16">
+                    <div class="admin-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <i class="fa-solid fa-clock-rotate-left text-amber fa-xl"></i>
+                            <div>
+                                <h3>AMMA ICU SENTINEL Clinician Login & Logout Access Audit Log</h3>
+                                <p class="settings-desc">Live HIPAA compliance record of exact timestamps when clinicians log in and log out of the ICU portal:</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="clearLoginAuditLog()"><i class="fa-solid fa-trash-can"></i> Clear Audit Log</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="staff-table" id="tableLoginAuditLog">
+                            <thead>
+                                <tr>
+                                    <th>Event Timestamp</th>
+                                    <th>Clinician Name & Role</th>
+                                    <th>Username ID</th>
+                                    <th>Action Event</th>
+                                    <th>Session Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loginAuditBody">
+                                <!-- Injected dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Google Sheets Auto-Storage Card (Admin Exclusive) -->
+                <div class="settings-card admin-card mt-16" id="adminGSheetsCard">
+                    <div class="admin-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <i class="fa-solid fa-file-excel text-emerald fa-xl"></i>
+                            <div>
+                                <h3>Google Sheets Real-Time Auto-Storage Configuration <span class="badge badge-crimson">ADMIN EXCLUSIVE</span></h3>
+                                <p class="settings-desc">Authorized System Admin Only: Configure Google Apps Script Webhook URL for real-time auto-saving to Google Sheets:</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid mt-10">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label><i class="fa-solid fa-link text-cyan"></i> Google Apps Script Webhook URL</label>
+                            <input type="text" class="form-control" id="cfgGoogleSheetWebhookAdmin" placeholder="Paste your Google Apps Script Webhook URL (starts with https://script.google.com/macros/s/...)" style="font-family:var(--font-mono); font-size:11px;">
+                            <div style="margin-top:8px; display:flex; gap:8px;">
+                                <button type="button" class="btn btn-emerald btn-sm" onclick="saveAdminGoogleSheetsSettings()"><i class="fa-solid fa-floppy-disk"></i> Save & Deploy Webhook Link</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="testGoogleSheetsSync()"><i class="fa-solid fa-paper-plane text-cyan"></i> Test & Sync Data Now</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="exportHospitalRecordsCSV()"><i class="fa-solid fa-file-csv text-emerald"></i> Export hospital_records.csv</button>
+                                <a href="https://docs.google.com/spreadsheets/d/1BY9qvlbwaeK19q5OO3ST-VCUt4Pno1lIQp2jGXNJou0/edit?gid=0#gid=0" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
+                                    <i class="fa-solid fa-up-right-from-square text-amber"></i> Open Connected Google Spreadsheet
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinician Care & Alarm History Card (Admin Exclusive) -->
+                <div class="settings-card admin-card mt-16" id="adminCareHistoryCard">
+                    <div class="admin-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <i class="fa-solid fa-notes-medical text-crimson fa-xl"></i>
+                            <div>
+                                <h3>AMMA ICU SENTINEL Clinician Care & Alarm History <span class="badge badge-crimson">ADMIN EXCLUSIVE</span></h3>
+                                <p class="settings-desc">Complete audit history of all clinician care responses, emergency alert dispatches, and ICU alarm breaches:</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="careHistoryFilter" class="form-control" placeholder="Search Clinician / Bed..." onkeyup="filterCareHistoryTable()" style="width:200px; font-size:12px;">
+                            <button class="btn btn-secondary btn-sm" onclick="clearCareHistory()"><i class="fa-solid fa-trash-can"></i> Clear History</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="staff-table" id="tableClinicianCareHistory">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Clinician Name & Role</th>
+                                    <th>Bed / Patient</th>
+                                    <th>Alarm Event / Clinical Action</th>
+                                    <th>Dispatch Target</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="careHistoryBody">
+                                <!-- Injected dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand">
+                <img src="amma_hospital_logo_transparent.png" alt="AMMA ICU SENTINEL Logo" class="header-hospital-logo">
+                <div class="brand-text">
+                    <h1>AMMA ICU SENTINEL <span class="version-badge">ICU Portal</span></h1>
+                    <span class="sub-title">ICU Alarm Fatigue & Smart Alarm Reduction System</span>
+                </div>
+            </div>
+
+            <!-- Header Engine & System Controls -->
+            <div class="header-controls">
+
+                <!-- Engine Mode Toggle -->
+                <div class="engine-toggle-card">
+                    <span class="toggle-label"><i class="fa-solid fa-microchip"></i> Smart Engine</span>
+                    <label class="switch">
+                        <input type="checkbox" id="smartEngineToggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="status-badge active" id="engineStatusBadge">ACTIVE</span>
+                </div>
+
+                <!-- Audio Mute Control -->
+                <button class="btn-icon" id="btnMuteAudio" title="Toggle Alarm Audio">
+                    <i class="fa-solid fa-volume-high" id="audioIcon"></i>
+                </button>
+
+                <!-- Dark / Light Mode Theme Toggle -->
+                <button class="btn-icon" id="btnThemeToggle" onclick="toggleThemeMode()" title="Toggle Dark / Light Theme Mode">
+                    <i class="fa-solid fa-moon text-cyan" id="themeIcon"></i>
+                </button>
+
+                <button class="btn btn-secondary btn-sm hidden" id="btnExportCSVNav" onclick="exportHospitalRecordsCSV()" title="Admin Exclusive: Download hospital_records.csv file directly to your disk">
+                    <i class="fa-solid fa-file-csv text-emerald"></i> Export CSV
+                </button>
+
+                <div class="system-time">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="liveClock">00:00:00</span>
+                </div>
+
+                <!-- User Profile & Logout (Positioned at Far Right Top Corner) -->
+                <div class="user-profile-badge" id="userProfileBadge" onclick="openDoctorProfileModal()" style="cursor: pointer;" title="Click to view Clinician Profile Details">
+                    <i class="fa-solid fa-user-doctor text-cyan"></i>
+                    <span id="userProfileName">Logged-in Clinician</span>
+                </div>
+                <button class="btn btn-logout" id="btnLogout" onclick="logoutUser()" title="Logout from AMMA ICU SENTINEL">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Metrics Ribbon -->
+        <section class="kpi-ribbon">
+            <div class="kpi-card">
+                <div class="kpi-icon raw-icon"><i class="fa-solid fa-bell"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-value" id="kpiRawAlarms">0</span>
+                    <span class="kpi-label">Raw Monitor Alarms</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon suppressed-icon"><i class="fa-solid fa-bell-slash"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-value" id="kpiSuppressedAlarms">0</span>
+                    <span class="kpi-label">Suppressed False Alarms</span>
+                </div>
+            </div>
+
+            <div class="kpi-card highlight">
+                <div class="kpi-icon reduction-icon"><i class="fa-solid fa-chart-line-down"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-value text-emerald" id="kpiReductionRate">0.0%</span>
+                    <span class="kpi-label">Alarm Burden Reduction</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon fatigue-icon"><i class="fa-solid fa-brain"></i></div>
+                <div class="kpi-data">
+                    <div class="fatigue-meter-container">
+                        <span class="kpi-value text-cyan" id="kpiFatigueScore">Low (Safe)</span>
+                        <div class="mini-progress-bar"><div class="fill" id="fatigueBar" style="width: 20%;"></div></div>
+                    </div>
+                    <span class="kpi-label">Clinician Fatigue Index</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon response-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-value text-amber" id="kpiTimeSaved">0 min</span>
+                    <span class="kpi-label">Clinical Time Saved</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Navigation Bar -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="tab-telemetry" id="tabTelemetryBtn">
+                <i class="fa-solid fa-desktop"></i> <span id="tabTelemetryTitle">Live ICU Telemetry</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-command">
+                <i class="fa-solid fa-layer-group"></i> 3-Tiered Alarm Center
+            </button>
+            <button class="tab-btn" data-tab="tab-analytics">
+                <i class="fa-solid fa-chart-pie"></i> Alarm Reduction Analytics
+            </button>
+            <button class="tab-btn" data-tab="tab-settings">
+                <i class="fa-solid fa-sliders"></i> Baseline & AI Settings
+            </button>
+        </nav>
+
+        <!-- Dashboard Content Panels -->
+        <main class="dashboard-content">
+            
+            <!-- TAB 1: Live ICU Telemetry & Simulator -->
+            <div class="tab-panel active" id="tab-telemetry">
+                <div class="dashboard-split">
+                    <!-- Left: 6 ICU Beds Grid -->
+                    <section class="monitors-section">
+                        <div class="section-header">
+                            <h2><i class="fa-solid fa-hospital-user text-cyan"></i> Unit B Telemetry Grid</h2>
+                            <div class="sim-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="openClinicalPatientReport()"><i class="fa-solid fa-file-medical text-emerald"></i> Clinical Summary Report</button>
+                                <button class="btn btn-secondary btn-sm" id="btnResetSim"><i class="fa-solid fa-rotate"></i> Reset Counters</button>
+                            </div>
+                        </div>
+
+                        <!-- Main Live Telemetry Focus Monitor Panel -->
+                        <div class="bed-card focus-bed active-selected" id="mainFocusMonitorPanel">
+                            <div class="bed-header">
+                                <div class="bed-title">
+                                    <span class="bed-number" id="activeBedBadgeNum">BED 101</span>
+                                    <span class="patient-info" id="activeBedPatientTitle">John Doe (64M) • Cardiac Post-Op</span>
+                                </div>
+                                <div class="bed-sqi">
+                                    <span class="sqi-label">SQI:</span>
+                                    <div class="sqi-badge sqi-good" id="activeBedSQIBadge">96% GOOD</div>
+                                </div>
+                            </div>
+
+                            <div class="vital-signals-wrapper">
+                                <!-- Waveforms -->
+                                <div class="waveforms-container">
+                                    <!-- ECG Waveform Card -->
+                                    <div class="waveform-monitor-card ecg-card">
+                                        <div class="wf-header">
+                                            <div class="wf-title text-ecg">
+                                                <i class="fa-solid fa-heart-pulse text-emerald"></i>
+                                                <span>ECG Lead II (250Hz) - Live Running</span>
+                                            </div>
+                                            <div class="wf-badge-pill ecg-pill">
+                                                <span class="lbl">HR</span>
+                                                <strong id="val-hr-101">72</strong>
+                                                <span class="unit">bpm</span>
+                                            </div>
+                                        </div>
+                                        <div class="canvas-with-axis">
+                                            <div class="y-axis ecg-axis">
+                                                <span>1.5</span>
+                                                <span>1.0</span>
+                                                <span>0.5</span>
+                                                <span>0</span>
+                                                <span>-0.5</span>
+                                                <span>-1.0</span>
+                                                <span>-1.5</span>
+                                                <span class="unit-tag">mV</span>
+                                            </div>
+                                             <canvas id="canvas-ecg-101" width="1400" height="120"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <!-- PPG SpO2 Waveform Card -->
+                                    <div class="waveform-monitor-card spo2-card">
+                                        <div class="wf-header">
+                                            <div class="wf-title text-spo2">
+                                                <i class="fa-solid fa-droplet text-cyan"></i>
+                                                <span>PPG / SpO₂ Pulse (100Hz) - Live Running</span>
+                                            </div>
+                                            <div class="wf-badge-pill spo2-pill">
+                                                <span class="lbl">SpO₂</span>
+                                                <strong id="val-spo2-101">98</strong>
+                                                <span class="unit">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="canvas-with-axis">
+                                            <div class="y-axis spo2-axis">
+                                                <span>1.0</span>
+                                                <span>0.8</span>
+                                                <span>0.6</span>
+                                                <span>0.4</span>
+                                                <span>0.2</span>
+                                                <span>0</span>
+                                                <span class="unit-tag">a.u.</span>
+                                            </div>
+                                            <canvas id="canvas-spo2-101" width="1400" height="120"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Numerical Vitals Tiles -->
+                                <div class="vitals-numerical">
+                                    <div class="vital-tile vital-hr">
+                                        <span class="v-label">HR</span>
+                                        <span class="v-value" id="num-hr-101">72</span>
+                                        <span class="v-unit">BPM</span>
+                                    </div>
+
+                                    <div class="vital-tile vital-spo2">
+                                        <span class="v-label">SpO₂</span>
+                                        <span class="v-value" id="num-spo2-101">98</span>
+                                        <span class="v-unit">%</span>
+                                    </div>
+
+                                    <div class="vital-tile vital-bp">
+                                        <span class="v-label">NIBP</span>
+                                        <span class="v-value" id="num-bp-101">120/80</span>
+                                        <span class="v-unit">mmHg</span>
+                                    </div>
+
+                                    <div class="vital-tile vital-rr">
+                                        <span class="v-label">RESP</span>
+                                        <span class="v-value" id="num-rr-101">16</span>
+                                        <span class="v-unit">rpm</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Active Threshold Safety Limits Bar -->
+                            <div class="threshold-limits-bar" id="thresholdBar-101">
+                                <div class="threshold-badge-title">
+                                    <i class="fa-solid fa-gauge-high text-cyan"></i>
+                                    <span>Active Monitor Limits:</span>
+                                </div>
+                                <div class="threshold-tags">
+                                    <span class="t-tag" id="tagBP">BP &lt; <strong id="lblMaxBP">140/90</strong></span>
+                                    <span class="t-tag" id="tagHR">HR: <strong id="lblRangeHR">50-120</strong></span>
+                                    <span class="t-tag" id="tagSpO2">SpO₂ &gt; <strong id="lblMinSpO2">90%</strong></span>
+                                    <span class="t-tag" id="tagRR">RESP &lt; <strong id="lblMaxRR">24</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Reasoning & Dynamic Delay Status Bar -->
+                            <div class="engine-reasoning-bar" id="reasoningBar-101">
+                                <div class="reason-status">
+                                    <i class="fa-solid fa-shield-halved text-emerald"></i>
+                                    <span id="reasoningText-101">Normal Baseline. No alarms active. Signal Quality index stable.</span>
+                                </div>
+                                <div class="delay-timer-chip hidden" id="delayChip-101">
+                                    <i class="fa-solid fa-hourglass-half fa-spin"></i>
+                                    <span id="delayCountdown-101">Dynamic Delay: 12s remaining</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4 Equal ICU Patient Bed Cards Grid -->
+                        <div class="beds-grid-4 mt-16">
+                            <!-- BED 101 -->
+                            <div class="bed-card compact-bed active-selected" id="bed-101" onclick="selectActiveBed(101)" title="Click to view & run live telemetry for BED 101">
+                                <div class="bed-header">
+                                    <span class="bed-number">BED 101</span>
+                                    <span class="patient-info">John Doe (64M) • Cardiac Post-Op</span>
+                                    <div class="sqi-badge sqi-good" id="sqi-101">96%</div>
+                                </div>
+                                <div class="compact-vitals">
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-heart text-ecg"></i> HR</span><span class="c-val text-ecg" id="c-hr-101">72</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-wave-square text-spo2"></i> SpO₂</span><span class="c-val text-spo2" id="c-spo2-101">98</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-gauge text-bp"></i> BP</span><span class="c-val text-bp" id="c-bp-101">120/80</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-lungs text-resp"></i> RESP</span><span class="c-val text-resp" id="c-rr-101">16</span></div>
+                                </div>
+                                <div class="click-run-tag"><i class="fa-solid fa-play text-cyan"></i> Click to run live waveforms</div>
+                            </div>
+
+                            <!-- BED 102 -->
+                            <div class="bed-card compact-bed" id="bed-102" onclick="selectActiveBed(102)" title="Click to view & run live telemetry for BED 102">
+                                <div class="bed-header">
+                                    <span class="bed-number">BED 102</span>
+                                    <span class="patient-info">Sarah C. (52F) • COPD</span>
+                                    <div class="sqi-badge sqi-good" id="sqi-102">94%</div>
+                                </div>
+                                <div class="compact-vitals">
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-heart text-ecg"></i> HR</span><span class="c-val text-ecg" id="c-hr-102">84</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-wave-square text-spo2"></i> SpO₂</span><span class="c-val text-spo2" id="c-spo2-102">93</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-gauge text-bp"></i> BP</span><span class="c-val text-bp" id="c-bp-102">118/76</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-lungs text-resp"></i> RESP</span><span class="c-val text-resp" id="c-rr-102">18</span></div>
+                                </div>
+                                <div class="click-run-tag"><i class="fa-solid fa-play text-cyan"></i> Click to run live waveforms</div>
+                            </div>
+
+                            <!-- BED 103 -->
+                            <div class="bed-card compact-bed" id="bed-103" onclick="selectActiveBed(103)" title="Click to view & run live telemetry for BED 103">
+                                <div class="bed-header">
+                                    <span class="bed-number">BED 103</span>
+                                    <span class="patient-info">Robert M. (71M) • Sepsis</span>
+                                    <div class="sqi-badge sqi-good" id="sqi-103">91%</div>
+                                </div>
+                                <div class="compact-vitals">
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-heart text-ecg"></i> HR</span><span class="c-val text-ecg" id="c-hr-103">96</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-wave-square text-spo2"></i> SpO₂</span><span class="c-val text-spo2" id="c-spo2-103">95</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-gauge text-bp"></i> BP</span><span class="c-val text-bp" id="c-bp-103">105/65</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-lungs text-resp"></i> RESP</span><span class="c-val text-resp" id="c-rr-103">22</span></div>
+                                </div>
+                                <div class="click-run-tag"><i class="fa-solid fa-play text-cyan"></i> Click to run live waveforms</div>
+                            </div>
+
+                            <!-- BED 104 -->
+                            <div class="bed-card compact-bed" id="bed-104" onclick="selectActiveBed(104)" title="Click to view & run live telemetry for BED 104">
+                                <div class="bed-header">
+                                    <span class="bed-number">BED 104</span>
+                                    <span class="patient-info">Elena R. (45F) • Trauma</span>
+                                    <div class="sqi-badge sqi-good" id="sqi-104">98%</div>
+                                </div>
+                                <div class="compact-vitals">
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-heart text-ecg"></i> HR</span><span class="c-val text-ecg" id="c-hr-104">68</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-wave-square text-spo2"></i> SpO₂</span><span class="c-val text-spo2" id="c-spo2-104">99</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-gauge text-bp"></i> BP</span><span class="c-val text-bp" id="c-bp-104">124/82</span></div>
+                                    <div class="c-vital"><span class="c-lbl"><i class="fa-solid fa-lungs text-resp"></i> RESP</span><span class="c-val text-resp" id="c-rr-104">14</span></div>
+                                </div>
+                                <div class="click-run-tag"><i class="fa-solid fa-play text-cyan"></i> Click to run live waveforms</div>
+                            </div>
+                        </div>
+
+                        <!-- Simulation Trigger Control Panel -->
+                        <div class="sim-control-panel">
+                            <h3><i class="fa-solid fa-sliders text-cyan"></i> Clinical Artifact & Emergency Trigger Panel (Bed 101)</h3>
+                            <p class="sim-desc">Simulate ICU noise artifacts, true clinical emergencies, or custom vital threshold range spikes:</p>
+
+                            <!-- Custom Range Spike / Breach Triggers -->
+                            <div class="sim-section-label"><i class="fa-solid fa-heart-pulse text-crimson"></i> Direct Doctor & Nurse Dispatch Triggers (Vital Fluctuation Spikes)</div>
+                            <div class="sim-buttons-grid">
+                                <button class="btn btn-sim btn-danger" onclick="triggerCustomBPSurge(131, 80)">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <div class="btn-text">
+                                        <strong>Test BP Spike (131/80)</strong>
+                                        <span>Exceeds Max Limit (130/80) • Direct Alert</span>
+                                    </div>
+                                </button>
+
+                                <button class="btn btn-sim btn-danger" onclick="triggerScenario('bp_surge')">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <div class="btn-text">
+                                        <strong>BP Surge Spike (175/105)</strong>
+                                        <span>Exceeds Max Limit (140/90) • Direct Alert</span>
+                                    </div>
+                                </button>
+
+                                <button class="btn btn-sim btn-danger" onclick="triggerScenario('hypertensive_crisis')">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <div class="btn-text">
+                                        <strong>Hypertensive Crisis (195/115)</strong>
+                                        <span>Severe BP Surge • Urgent Emergency</span>
+                                    </div>
+                                </button>
+
+                                <button class="btn btn-sim btn-warn" onclick="triggerScenario('hr_spike')">
+                                    <i class="fa-solid fa-heart-circle-bolt"></i>
+                                    <div class="btn-text">
+                                        <strong>Sudden HR Surge (145 BPM)</strong>
+                                        <span>Exceeds HR High Limit (120 BPM)</span>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="sim-section-label mt-12"><i class="fa-solid fa-shield-virus text-cyan"></i> Artifact Noise & Code Scenarios</div>
+                            <div class="sim-buttons-grid">
+                                <button class="btn btn-sim btn-noise" onclick="triggerScenario('coughing_dip')">
+                                    <i class="fa-solid fa-lungs-virus"></i>
+                                    <div class="btn-text">
+                                        <strong>Transient Cough Dip</strong>
+                                        <span>SpO₂ &lt; 88% for 6s (Self-Correcting)</span>
+                                    </div>
+                                </button>
+
+                                <button class="btn btn-sim btn-noise" onclick="triggerScenario('motion_artifact')">
+                                    <i class="fa-solid fa-hand-shake"></i>
+                                    <div class="btn-text">
+                                        <strong>Limb Motion Artifact</strong>
+                                        <span>PPG wave distorted, HR normal</span>
+                                    </div>
+                                </button>
+
+                                <button class="btn btn-sim btn-tech" onclick="triggerScenario('lead_off')">
+                                    <i class="fa-solid fa-plug-circle-xmark"></i>
+                                    <div class="btn-text">
+                                        <strong>ECG Lead Shift / Disconnect</strong>
+                                        <span>Flatline ECG + Low SQI (Pulse OK)</span>
+                                    </div>
+                                </button>
+
+                                <button class="btn btn-sim btn-danger" onclick="triggerScenario('asystole_code')">
+                                    <i class="fa-solid fa-heart-crack"></i>
+                                    <div class="btn-text">
+                                        <strong>Asystole / V-Fib Code</strong>
+                                        <span>Zero Vitals (Tier 1 Siren Code Red)</span>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <!-- Live Manual Vital Slider Controls -->
+                            <div class="manual-vital-adjuster">
+                                <div class="adjuster-header">
+                                    <span><i class="fa-solid fa-sliders"></i> Manual Live Vital Adjuster</span>
+                                    <button class="btn btn-sm btn-cyan" onclick="applyManualVitals()"><i class="fa-solid fa-play"></i> Evaluate Thresholds</button>
+                                </div>
+                                <div class="adjuster-grid">
+                                    <div class="slider-group">
+                                        <label>Systolic BP: <strong id="lblSliderSysBP">120</strong> mmHg</label>
+                                        <input type="range" id="sliderSysBP" min="70" max="220" value="120" oninput="document.getElementById('lblSliderSysBP').textContent=this.value; applyManualVitals();">
+                                    </div>
+                                    <div class="slider-group">
+                                        <label>Diastolic BP: <strong id="lblSliderDiaBP">80</strong> mmHg</label>
+                                        <input type="range" id="sliderDiaBP" min="40" max="130" value="80" oninput="document.getElementById('lblSliderDiaBP').textContent=this.value; applyManualVitals();">
+                                    </div>
+                                    <div class="slider-group">
+                                        <label>Heart Rate: <strong id="lblSliderHR">72</strong> BPM</label>
+                                        <input type="range" id="sliderHR" min="30" max="180" value="72" oninput="document.getElementById('lblSliderHR').textContent=this.value; applyManualVitals();">
+                                    </div>
+                                    <div class="slider-group">
+                                        <label>SpO₂ Saturation: <strong id="lblSliderSpO2">98</strong> %</label>
+                                        <input type="range" id="sliderSpO2" min="60" max="100" value="98" oninput="document.getElementById('lblSliderSpO2').textContent=this.value; applyManualVitals();">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-sim btn-reset mt-12" onclick="triggerScenario('normalize')">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <div class="btn-text">
+                                    <strong>Normalize Patient Baseline</strong>
+                                    <span>Clear active alarms and restore normal baseline vitals</span>
+                                </div>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Right Column: Live Mobile Push Simulation Frame -->
+                    <aside class="side-panel">
+                        <div class="mobile-push-preview">
+                            <div class="phone-frame">
+                                <div class="phone-speaker"></div>
+                                <div class="phone-screen">
+                                    <div class="phone-header">
+                                        <span id="phoneClock">09:41</span>
+                                        <div class="phone-icons"><i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></div>
+                                    </div>
+
+                                    <div class="phone-app-banner">
+                                        <i class="fa-solid fa-heart-pulse text-cyan"></i>
+                                        <span>AMMA ICU SENTINEL Direct Alert</span>
+                                    </div>
+
+                                    <!-- Phone View Mode Selector (Nurse vs Doctor) -->
+                                    <div class="phone-role-selector">
+                                        <button class="role-btn active" id="btnRoleNurse" onclick="switchPhoneRole('nurse')"><i class="fa-solid fa-user-nurse"></i> Nurse</button>
+                                        <button class="role-btn" id="btnRoleDoctor" onclick="switchPhoneRole('doctor')"><i class="fa-solid fa-user-doctor"></i> Doctor</button>
+                                    </div>
+
+                                    <div class="mobile-notif-card" id="mobileNotifCard">
+                                        <div class="notif-header">
+                                            <span id="mobileNotifRoleTag">Nurse Alert • BED 101</span>
+                                            <span class="time-ago">Just now</span>
+                                        </div>
+                                        <div class="notif-body" id="mobileNotifBody">
+                                            <strong class="text-emerald"><i class="fa-solid fa-circle-check"></i> Monitoring Normal</strong>
+                                            <p>No actionable clinician alerts queued. Smart reduction active.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="phone-duty-card" id="phoneDutyCard">
+                                        <div class="duty-title">Assigned Care Team</div>
+                                        <div class="duty-contact">
+                                            <div class="contact-row">
+                                                <i class="fa-solid fa-user-nurse text-cyan"></i>
+                                                <div class="contact-info">
+                                                    <span class="c-name" id="dispNurseName">Nurse Emily Watson, RN</span>
+                                                    <span class="c-sub" id="dispNursePhone">Pager: +1-555-0144</span>
+                                                </div>
+                                            </div>
+                                            <div class="contact-row mt-6">
+                                                <i class="fa-solid fa-user-doctor text-amber"></i>
+                                                <div class="contact-info">
+                                                    <span class="c-name" id="dispDocName">Dr. Sarah Jenkins, MD</span>
+                                                    <span class="c-sub" id="dispDocPhone">On-Call Cardiologist (+1-555-0192)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <!-- TAB 2: 3-Tiered Alarm Center & Centralized Alert-Message System -->
+            <div class="tab-panel" id="tab-command">
+                <div class="central-inbox-wrapper">
+                    <!-- Central Alert-Message System Header & Filter Control -->
+                    <div class="central-inbox-card">
+                        <div class="inbox-header-row">
+                            <div class="inbox-title">
+                                <i class="fa-solid fa-inbox text-cyan fa-lg"></i>
+                                <div>
+                                    <h2 class="m-0">ACTIVE CLINICAL ALERTS</h2>
+                                    <span class="sub-title">Single Centralized Alert-Message System • Role-Based Inbox Routing & Automatic Timeout Escalation</span>
+                                </div>
+                            </div>
+
+                            <div class="inbox-role-switcher">
+                                <span class="lbl-role-filter"><i class="fa-solid fa-filter"></i> Role View Routing:</span>
+                                <select class="form-control select-role-view" id="selectAlertRoleView" onchange="changeAlertRoleFilter(this.value)">
+                                    <option value="charge_nurse">Charge Nurse View (All Unresolved Ward Alerts)</option>
+                                    <option value="nurse">Nurse View (Assigned Patient Alerts)</option>
+                                    <option value="doctor">Doctor View (Assigned & Escalated Alerts)</option>
+                                    <option value="admin">Administrator View (System Status & Full Audit History)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Severity Filter Tabs -->
+                        <div class="inbox-severity-bar">
+                            <div class="sev-tabs">
+                                <button class="sev-tab-btn active" id="sevFilterAll" onclick="setAlertSeverityFilter('ALL')">All Alerts (<span id="cntSevAll">4</span>)</button>
+                                <button class="sev-tab-btn sev-btn-critical" id="sevFilterCritical" onclick="setAlertSeverityFilter('CRITICAL')"><i class="fa-solid fa-circle-exclamation"></i> Critical (<span id="cntSevCritical">1</span>)</button>
+                                <button class="sev-tab-btn sev-btn-urgent" id="sevFilterUrgent" onclick="setAlertSeverityFilter('URGENT')"><i class="fa-solid fa-triangle-exclamation"></i> Urgent (<span id="cntSevUrgent">1</span>)</button>
+                                <button class="sev-tab-btn sev-btn-warning" id="sevFilterWarning" onclick="setAlertSeverityFilter('WARNING')"><i class="fa-solid fa-triangle-exclamation"></i> Warning (<span id="cntSevWarning">1</span>)</button>
+                                <button class="sev-tab-btn sev-btn-advisory" id="sevFilterAdvisory" onclick="setAlertSeverityFilter('ADVISORY')"><i class="fa-solid fa-circle-info"></i> Advisory (<span id="cntSevAdvisory">1</span>)</button>
+                            </div>
+
+                            <div class="inbox-admin-lock-tag" title="Only Admin can modify 3-Tier Alarm Engine Boundaries">
+                                <i class="fa-solid fa-shield-halved text-amber"></i> <span>3-Tier Engine Modifications: <strong>ADMIN ONLY</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Centralized Alert Inbox Feed -->
+                        <div class="central-alert-feed-container" id="centralAlertInboxFeed">
+                            <!-- Alert Cards Render Dynamically Here -->
+                        </div>
+                    </div>
+
+                    <!-- 3-Tiered Alarm Engine Queues -->
+                    <div class="tiered-command-grid mt-16">
+                        <!-- Tier 1 Red Emergency Queue -->
+                        <div class="tier-column tier-1-col">
+                            <div class="tier-col-header">
+                                <div class="t-title text-crimson">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>TIER 1: RED CRISIS QUEUE</span>
+                                </div>
+                                <span class="badge badge-crimson" id="countTier1">0</span>
+                            </div>
+                            <p class="t-sub">Immediate Life-Threat • Direct Mobile Push & Sirens</p>
+                            <div class="alarm-feed-large" id="feedTier1">
+                                <div class="empty-feed">No active Tier 1 red emergencies</div>
+                            </div>
+                        </div>
+
+                        <!-- Tier 2 Yellow Advisory Queue -->
+                        <div class="tier-column tier-2-col">
+                            <div class="tier-col-header">
+                                <div class="t-title text-amber">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span>TIER 2: YELLOW ADVISORY QUEUE</span>
+                                </div>
+                                <span class="badge badge-amber" id="countTier2">0</span>
+                            </div>
+                            <p class="t-sub">Sustained Abnormal Trend • 30s Smart Escalation Window</p>
+                            <div class="alarm-feed-large" id="feedTier2">
+                                <div class="empty-feed">No active Tier 2 yellow warnings</div>
+                            </div>
+                        </div>
+
+                        <!-- Tier 3 Silent Audit Log -->
+                        <div class="tier-column tier-3-col">
+                            <div class="tier-col-header">
+                                <div class="t-title text-gray">
+                                    <i class="fa-solid fa-filter"></i>
+                                    <span>TIER 3: SILENT AUDIT LOG</span>
+                                </div>
+                                <span class="badge badge-gray" id="countTier3">0</span>
+                            </div>
+                            <p class="t-sub">Filtered False Positives & Technical Noise (Auditable)</p>
+                            <div class="alarm-feed-large" id="feedTier3">
+                                <div class="empty-feed">Log empty</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Alarm Reduction Analytics -->
+            <div class="tab-panel" id="tab-analytics">
+                <div class="analytics-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                    <!-- 1. Alarm Type × Decision — Stacked Bar -->
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-layer-group text-cyan"></i> 1. Alarm Type × Decision (Stacked Bar)</h3>
+                        <p class="settings-desc" style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Alarm Categories split by Suppressed (False Positive Noise) vs Escalated (Actionable Alert):</p>
+                        <div class="chart-wrapper">
+                            <canvas id="chartAlarmDecisionStacked"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 2. Threshold vs Precision / Recall / F1 — Line Chart -->
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-chart-line text-amber"></i> 2. Decision Threshold vs Precision / Recall / F1</h3>
+                        <p class="settings-desc" style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Evaluation of ML CDS Decision Threshold tuning against clinical safety metrics:</p>
+                        <div class="chart-wrapper">
+                            <canvas id="chartPrecisionRecallF1"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 3. Potential Alarm Reduction vs Threshold — Line Chart -->
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-arrow-trend-down text-emerald"></i> 3. Potential Alarm Reduction vs Threshold</h3>
+                        <p class="settings-desc" style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Quantifies % Alarm Fatigue Reduction & Cumulative Clinician Hours Saved across threshold bounds:</p>
+                        <div class="chart-wrapper">
+                            <canvas id="chartAlarmReductionThreshold"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 4. SHAP Feature Importance — Horizontal Bar -->
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-chart-bar text-crimson"></i> 4. SHAP Feature Importance (Explainable AI / XAI)</h3>
+                        <p class="settings-desc" style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Mean |SHAP value| impact of physiological parameters on Smart Alarm Reduction decision:</p>
+                        <div class="chart-wrapper">
+                            <canvas id="chartShapImportance"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Baseline & AI Customizer -->
+            <div class="tab-panel" id="tab-settings">
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <h3><i class="fa-solid fa-sliders text-cyan"></i> Patient Baseline & Safety Threshold Customizer</h3>
+                        <p class="settings-desc">Configure custom vital sign ranges and direct Doctor/Nurse emergency alert dispatch parameters:</p>
+
+                        <!-- Vital Sign Range Controls -->
+                        <div class="settings-section-header">
+                            <i class="fa-solid fa-heart-pulse text-crimson"></i> Custom Vital Safety Range Limits (Monitor Limits)
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Systolic BP Upper Limit (Max mmHg)</label>
+                                <input type="number" class="form-control" value="140" id="cfgBPSysMax" min="100" max="220">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Diastolic BP Upper Limit (Max mmHg)</label>
+                                <input type="number" class="form-control" value="90" id="cfgBPDiaMax" min="60" max="130">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Heart Rate High Limit (Max BPM)</label>
+                                <input type="number" class="form-control" value="120" id="cfgHRMax" min="80" max="180">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Heart Rate Low Limit (Min BPM)</label>
+                                <input type="number" class="form-control" value="50" id="cfgHRMin" min="30" max="70">
+                            </div>
+
+                            <div class="form-group">
+                                <label>SpO₂ Saturation Safety Limit (Min %)</label>
+                                <input type="number" class="form-control" value="90" id="cfgSpO2Min" min="70" max="95">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Respiratory Rate High Limit (Max RPM)</label>
+                                <input type="number" class="form-control" value="24" id="cfgRRMax" min="16" max="40">
+                            </div>
+                        </div>
+
+                        <!-- Doctor & Nurse Contact Dispatch Settings -->
+                        <div class="settings-section-header mt-16">
+                            <i class="fa-solid fa-user-doctor text-amber"></i> Assigned Care Team Direct Dispatch Contacts
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>On-Call Doctor Name</label>
+                                <input type="text" class="form-control" value="Dr. Sarah Jenkins, MD" id="cfgDocName">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Doctor Phone / Pager ID</label>
+                                <input type="text" class="form-control" value="+1 (555) 019-2834" id="cfgDocPhone">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Assigned Nurse Name</label>
+                                <input type="text" class="form-control" value="Nurse Emily Watson, RN" id="cfgNurseName">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nurse Pager / Phone ID</label>
+                                <input type="text" class="form-control" value="+1 (555) 014-9921" id="cfgNursePhone">
+                            </div>
+                        </div>
+
+                        <!-- Cohort & Engine Settings -->
+                        <div class="settings-section-header mt-16">
+                            <i class="fa-solid fa-microchip text-cyan"></i> ICU Cohort & Noise Engine Bounds
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Target ICU Cohort Profile</label>
+                                <select id="profileSelect" class="form-control">
+                                    <option value="micu" selected>Medical ICU (MICU)</option>
+                                    <option value="sicu">Surgical ICU (SICU)</option>
+                                    <option value="cicu">Cardiac ICU (CICU/CCU)</option>
+                                    <option value="nicu">Neuro ICU (NICU)</option>
+                                    <option value="trauma">Trauma ICU</option>
+                                    <option value="respiratory">Respiratory/Pulmonary ICU</option>
+                                    <option value="burn">Burn ICU</option>
+                                    <option value="transplant">Transplant ICU</option>
+                                    <option value="oncology">Oncology ICU</option>
+                                    <option value="general">Mixed/General ICU</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label><i class="fa-solid fa-image text-cyan"></i> Dynamic Dashboard & Login Background Style</label>
+                                <select id="bgStyleSelect" class="form-control" onchange="changeBackgroundStyle(this.value)">
+                                    <option value="icu_room" selected>Style 1: Realistic ICU Room (Blurred Clinical Ward)</option>
+                                    <option value="animated_ecg">Style 2: Animated ECG (Subtle Telemetry Grid)</option>
+                                    <option value="tech_medical">Style 3: Tech Medical Network (Animated Nodes)</option>
+                                    <option value="minimal_waves">Style 4: Minimal Blue Waves (Animated Flow)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Dynamic Suppression Window (Seconds)</label>
+                                <input type="number" class="form-control" value="12" id="cfgDelayWindow" min="5" max="30">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Minimum Acceptable Signal Quality (SQI Threshold)</label>
+                                <input type="number" class="form-control" value="65" id="cfgSQI" min="30" max="90">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Direct Emergency Dispatch Strategy</label>
+                                <select class="form-control" disabled>
+                                    <option>INSTANT DUAL SMS + PUSH DISPATCH TO DOC & NURSE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Google Sheets Admin Managed Notice -->
+                        <div class="settings-section-header mt-16">
+                            <i class="fa-solid fa-file-excel text-emerald"></i> Google Sheets Real-Time Auto-Storage
+                            <span class="badge badge-amber" style="margin-left:8px;">MANAGED BY SYSTEM ADMIN</span>
+                        </div>
+                        <p class="settings-desc" style="font-size:11.5px; color:var(--text-muted); margin-bottom:12px;">
+                            Real-time auto-saving to Google Sheets (Sheet1 & Sheet2) is actively configured and managed exclusively by the Hospital System Administrator in the Admin Console.
+                        </p>
+
+                        <button class="btn btn-emerald mt-16" id="btnSaveThresholdSettings">
+                            <i class="fa-solid fa-floppy-disk"></i> Save & Deploy Settings Across ICU
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Emergency Dispatch Pop-up Modal Container -->
+    <div class="dispatch-modal-overlay hidden" id="dispatchModal">
+        <div class="dispatch-modal-card">
+            <div class="modal-header">
+                <div class="header-title text-crimson">
+                    <i class="fa-solid fa-triangle-exclamation fa-beat-fade"></i>
+                    <span>DIRECT CLINICAL DISPATCH SENT</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeDispatchModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-patient-banner">
+                    <div class="m-patient-title">
+                        <strong id="modalPatientBannerTitle">BED 101 • John Doe (64M)</strong>
+                        <span class="m-unit">Unit B - Cardiac ICU</span>
+                    </div>
+                    <span class="m-timestamp" id="modalTimestamp">00:00:00</span>
+                </div>
+
+                <!-- Vital Fluctuation Details -->
+                <div class="modal-breach-box">
+                    <div class="breach-header">
+                        <i class="fa-solid fa-heart-pulse text-crimson"></i>
+                        <span id="modalBreachTitle">CRITICAL VITAL FLUCTUATION SPIKE</span>
+                    </div>
+                    <div class="breach-details" id="modalBreachText">
+                        Blood Pressure spiked to <strong>175/105 mmHg</strong>, exceeding configured upper safety threshold (<strong>140/90 mmHg</strong>) by +35 mmHg.
+                    </div>
+                </div>
+
+                <!-- Doctor & Nurse Message Payloads -->
+                <div class="modal-dispatch-targets">
+                    <div class="dispatch-card doc-card">
+                        <div class="d-card-header">
+                            <i class="fa-solid fa-user-doctor text-amber"></i>
+                            <div>
+                                <strong id="modalDocName">Dr. Sarah Jenkins, MD</strong>
+                                <span class="d-role">On-Call Physician (+1-555-0192)</span>
+                            </div>
+                            <span class="d-status status-sent"><i class="fa-solid fa-paper-plane"></i> SMS SENT</span>
+                        </div>
+                        <div class="d-message" id="modalDocMessage">
+                            "CRITICAL BP SURGE: Bed 101 BP spiked to 175/105 mmHg exceeding max limit 140/90. Immediate physician review requested."
+                        </div>
+                    </div>
+
+                    <div class="dispatch-card nurse-card">
+                        <div class="d-card-header">
+                            <i class="fa-solid fa-user-nurse text-cyan"></i>
+                            <div>
+                                <strong id="modalNurseName">Nurse Emily Watson, RN</strong>
+                                <span class="d-role">Duty ICU Nurse (+1-555-0144)</span>
+                            </div>
+                            <span class="d-status status-sent"><i class="fa-solid fa-mobile-screen"></i> PUSH DELIVERED</span>
+                        </div>
+                        <div class="d-message" id="modalNurseMessage">
+                            "URGENT ALERT: Bed 101 Vital Threshold Violation. BP 175/105 mmHg (Exceeds limit). Please check patient immediately."
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDispatchModal()"><i class="fa-solid fa-check"></i> Acknowledge Dispatch</button>
+                <button class="btn btn-danger" onclick="callDoctorAlert()"><i class="fa-solid fa-phone"></i> Emergency Call Doctor</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Profile Details Modal Container -->
+    <div class="dispatch-modal-overlay hidden" id="doctorProfileModal">
+        <div class="dispatch-modal-card doc-profile-card">
+            <div class="modal-header">
+                <div class="header-title text-cyan">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>AMMA ICU SENTINEL PHYSICIAN PROFILE</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeDoctorProfileModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="doc-profile-avatar-row">
+                    <div class="doc-avatar-circle">
+                        <i class="fa-solid fa-user-doctor text-cyan" id="dpAvatarIcon" style="font-size: 32px;"></i>
+                    </div>
+                    <div>
+                        <h3 id="dpDocName" style="margin: 0; font-size: 18px;">Dr. Sarah Jenkins, MD</h3>
+                        <p id="dpSpecialty" style="margin: 4px 0 6px 0; font-size: 12px;">Senior Attending Physician • ICU Telemetry</p>
+                        <span class="role-badge-doc" id="dpRoleBadge">DOCTOR (LEVEL 3 AUTHORIZED)</span>
+                    </div>
+                </div>
+
+                <div class="profile-details-grid mt-16">
+                    <div class="p-detail-item">
+                        <span class="p-label"><i class="fa-solid fa-id-badge text-amber"></i> Employee Username ID</span>
+                        <strong class="p-value" id="dpUserKey">doctor</strong>
+                    </div>
+                    <div class="p-detail-item">
+                        <span class="p-label"><i class="fa-solid fa-phone text-emerald"></i> Direct Phone / Pager ID</span>
+                        <strong class="p-value" id="dpPhone">+1 (555) 019-2834</strong>
+                    </div>
+                    <div class="p-detail-item">
+                        <span class="p-label"><i class="fa-solid fa-hospital-user text-cyan"></i> Assigned ICU Ward</span>
+                        <strong class="p-value">Surgical ICU (Unit B) • Beds 101 - 106</strong>
+                    </div>
+                    <div class="p-detail-item">
+                        <span class="p-label"><i class="fa-solid fa-shield-halved text-amber"></i> HIPAA Authorization</span>
+                        <strong class="p-value text-emerald"><i class="fa-solid fa-circle-check"></i> CLINICAL AUTHORIZED</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDoctorProfileModal()"><i class="fa-solid fa-xmark"></i> Close Profile</button>
+                <button class="btn btn-danger" onclick="closeDoctorProfileModal(); logoutUser();"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Clinical Summary Report Modal Container (Centromed / AMMA ICU SENTINEL Design) -->
+    <div class="dispatch-modal-overlay hidden" id="clinicalReportModal">
+        <div class="dispatch-modal-card" style="max-width:820px; width:95%; background:#ffffff; color:#1e293b; border-radius:8px; overflow:hidden; font-family:'Inter', Arial, sans-serif;">
+            
+            <!-- Modal Header Controls (Screen only) -->
+            <div class="modal-header no-print" style="background:#020f1a; color:#fff; border-bottom:1px solid #1e293b; padding:10px 16px;">
+                <div class="header-title text-emerald" style="display:flex; align-items:center; gap:8px; font-size:14px;">
+                    <i class="fa-solid fa-file-medical fa-lg"></i>
+                    <span style="font-weight:700; letter-spacing:0.5px;">AMMA ICU SENTINEL - OFFICIAL CLINICAL & TELEMETRY LAB REPORT</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeClinicalReportModal()" style="color:#fff;">&times;</button>
+            </div>
+
+            <!-- Printable Report Body -->
+            <div class="modal-body" style="padding:18px 22px; background:#ffffff; color:#0f172a;" id="printableReportContent">
+                
+                <!-- 1. Hospital Header Bar -->
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2.5px solid #ff2a5f; padding-bottom:10px; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="amma_hospital_logo_transparent.png" alt="AMMA ICU SENTINEL Logo" style="height:46px;">
+                        <div>
+                            <h1 style="margin:0; font-size:21px; font-weight:800; color:#0f172a; letter-spacing:-0.5px;">AMMA ICU SENTINEL</h1>
+                            <span style="font-size:10px; font-weight:600; color:#ff2a5f; text-transform:uppercase; letter-spacing:0.8px;">ICU TELEMETRY & CLINICAL PATHOLOGY LABS PVT. LTD</span>
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:16px; font-weight:800; color:#ff2a5f; letter-spacing:0.8px;">CLINICAL ICU REPORT</div>
+                        <span style="font-size:10px; color:#64748b;">Inspiring Better Healthcare Quality</span>
+                    </div>
+                </div>
+
+                <!-- 2. Patient Roster Information Block (2 Columns) -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 14px; margin-bottom:12px; font-size:11.5px; color:#334155;">
+                    <div>
+                        <div style="margin-bottom:3px;"><strong>Patient Name:</strong> <span id="repPatientName" style="font-weight:700; color:#0f172a;">Mrs. KALYANI / John Doe</span></div>
+                        <div style="margin-bottom:3px;"><strong>Age / Gender:</strong> <span id="repAgeGender">64 Yrs / M</span></div>
+                        <div style="margin-bottom:3px;"><strong>Ref. Physician:</strong> <span id="repAttendingDoc">Dr. Sarah Jenkins, MD</span></div>
+                        <div style="margin-bottom:3px;"><strong>Requisition No.:</strong> <span id="repReqNo" style="font-family:monospace; font-weight:700;">AMMA26153547</span></div>
+                        <div><strong>Sample / Department:</strong> <span id="repSampleType">ICU Vital Telemetry & Cardiac ECG</span></div>
+                    </div>
+                    <div>
+                        <div style="margin-bottom:3px;"><strong>Vial / Bed ID:</strong> <strong id="repBedId" style="color:#ff2a5f;">BED 101</strong></div>
+                        <div style="margin-bottom:3px;"><strong>Collected On:</strong> <span id="repCollectedOn">25-Sep-2026 12:47 PM</span></div>
+                        <div style="margin-bottom:3px;"><strong>Registered On:</strong> <span id="repRegisteredOn">25-Sep-2026 12:19 PM</span></div>
+                        <div style="margin-bottom:3px;"><strong>Reported On:</strong> <span id="repReportedOn">25-Sep-2026 01:29 PM</span></div>
+                        <div><strong>Hospital Unit:</strong> <span id="repClientName">AMMA ICU SENTINEL ICU UNIT B</span></div>
+                    </div>
+                </div>
+
+                <!-- 3. Department Section Header -->
+                <div style="background:#0f172a; color:#ffffff; font-weight:700; font-size:11px; text-align:center; padding:5px; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:10px; border-radius:4px;">
+                    CLINICAL ICU PATHOLOGY & PHYSIOLOGICAL VITAL ANALYSIS (CDS CUE)
+                </div>
+
+                <!-- 4. Structured Results Table -->
+                <table style="width:100%; border-collapse:collapse; margin-bottom:12px; font-size:11.5px; color:#1e293b;">
+                    <thead>
+                        <tr style="border-top:2px solid #0f172a; border-bottom:2px solid #0f172a; background:#f1f5f9; text-align:left;">
+                            <th style="padding:6px 8px; width:40%;">Test Name</th>
+                            <th style="padding:6px 8px; width:20%;">Observed Values</th>
+                            <th style="padding:6px 8px; width:15%;">Units</th>
+                            <th style="padding:6px 8px; width:25%;">Biological Reference Intervals</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Section: Physical Examination -->
+                        <tr style="background:#f8fafc; font-weight:700; font-size:10.5px; color:#475569;">
+                            <td colspan="4" style="padding:5px 8px; border-bottom:1px solid #cbd5e1;">CARDIAC & PHYSIOLOGICAL PARAMETERS</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* HEART RATE (ECG Lead II)</strong><br><span style="font-size:9.5px; color:#64748b;">Method: 250Hz Continuous Waveform</span></td>
+                            <td style="padding:5px 8px; font-weight:700;" id="tableHR">75.0</td>
+                            <td style="padding:5px 8px;">bpm</td>
+                            <td style="padding:5px 8px;">50.0 - 100.0</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* SYSTOLIC BLOOD PRESSURE</strong><br><span style="font-size:9.5px; color:#64748b;">Method: Oscillometric NIBP Monitor</span></td>
+                            <td style="padding:5px 8px; font-weight:700;" id="tableSysBP">120.0</td>
+                            <td style="padding:5px 8px;">mmHg</td>
+                            <td style="padding:5px 8px;">90.0 - 130.0</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* DIASTOLIC BLOOD PRESSURE</strong><br><span style="font-size:9.5px; color:#64748b;">Method: Oscillometric NIBP Monitor</span></td>
+                            <td style="padding:5px 8px; font-weight:700;" id="tableDiaBP">80.0</td>
+                            <td style="padding:5px 8px;">mmHg</td>
+                            <td style="padding:5px 8px;">60.0 - 85.0</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* OXYGEN SATURATION (SpO2)</strong><br><span style="font-size:9.5px; color:#64748b;">Method: Dual Wavelength Pulse Oximetry</span></td>
+                            <td style="padding:5px 8px; font-weight:700;" id="tableSpO2">98.0</td>
+                            <td style="padding:5px 8px;">%</td>
+                            <td style="padding:5px 8px;">95.0 - 100.0</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* RESPIRATION RATE (RR)</strong><br><span style="font-size:9.5px; color:#64748b;">Method: Transthoracic Impedance</span></td>
+                            <td style="padding:5px 8px; font-weight:700;" id="tableRR">16.0</td>
+                            <td style="padding:5px 8px;">bpm</td>
+                            <td style="padding:5px 8px;">12.0 - 20.0</td>
+                        </tr>
+
+                        <!-- Section: CDS Smart Signal Quality & Reduction -->
+                        <tr style="background:#f8fafc; font-weight:700; font-size:10.5px; color:#475569;">
+                            <td colspan="4" style="padding:5px 8px; border-bottom:1px solid #cbd5e1; border-top:1px solid #cbd5e1;">SIGNAL QUALITY & CDS FATIGUE METRICS</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* PPG SIGNAL QUALITY INDEX (SQI)</strong><br><span style="font-size:9.5px; color:#64748b;">Method: Cross-Correlation Artifact Check</span></td>
+                            <td style="padding:5px 8px; font-weight:700; color:#10b981;" id="tableSQI">95.0</td>
+                            <td style="padding:5px 8px;">%</td>
+                            <td style="padding:5px 8px;">&gt; 65.0 % (ACCEPTABLE)</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* RAW MONITOR TRIGGERS</strong></td>
+                            <td style="padding:5px 8px; font-weight:700;" id="tableRaw">12</td>
+                            <td style="padding:5px 8px;">-</td>
+                            <td style="padding:5px 8px;">0 - 2 / SHIFT</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:5px 8px;"><strong>* SMART REDUCTION EFFICIENCY RATE</strong></td>
+                            <td style="padding:5px 8px; font-weight:700; color:#0284c7;" id="tableRedRate">75.0</td>
+                            <td style="padding:5px 8px;">%</td>
+                            <td style="padding:5px 8px;">&gt; 50.0 % (OPTIMAL)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 5. Clinical Interpretation Box -->
+                <div style="border:1px solid #0f172a; border-radius:5px; padding:10px 12px; margin-bottom:14px; background:#f8fafc; font-size:11px; line-height:1.45;">
+                    <div style="font-weight:700; text-transform:uppercase; color:#0f172a; border-bottom:1px solid #cbd5e1; padding-bottom:3px; margin-bottom:5px;">
+                        INTERPRETATION & CLINICAL RECOMMENDATIONS:
+                    </div>
+                    <p style="margin:0 0 5px 0; color:#334155;" id="repImpressionText">
+                        Patient telemetry indicates stable baseline cardiac rhythms with transient artifact suppression active. Continuous PPG signal quality monitoring recommended.
+                    </p>
+                    <div style="font-size:10px; color:#64748b;">
+                        <strong>Note:</strong> The diagnosis of acute physiological collapse requires clinical correlation with physical examination and arterial blood gas findings.
+                    </div>
+                </div>
+
+                <!-- 6. Signatures & QR Code Authentication -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid #e2e8f0; padding-top:10px; margin-bottom:8px;">
+                    <div style="text-align:center;">
+                        <div style="font-family:'Brush Script MT', cursive, sans-serif; font-size:20px; color:#0f172a; margin-bottom:1px;">Khaled</div>
+                        <strong style="font-size:11px; color:#0f172a; display:block;">Muhammad Khaled M.Sc</strong>
+                        <span style="font-size:9.5px; color:#64748b;">LAB MANAGER</span>
+                    </div>
+
+                    <div style="text-align:center;">
+                        <!-- QR Code Image -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=AMMA_HOSPITAL_ICU_REPORT_VERIFIED" alt="Security QR Code" style="height:52px; width:52px; border:1px solid #cbd5e1; padding:2px;">
+                        <div style="font-size:8.5px; color:#64748b; margin-top:1px;">AUTHENTICATED</div>
+                    </div>
+
+                    <div style="text-align:center;">
+                        <div style="font-family:'Brush Script MT', cursive, sans-serif; font-size:20px; color:#0f172a; margin-bottom:1px;">S. Jenkins</div>
+                        <strong style="font-size:11px; color:#0f172a; display:block;" id="sigDocName">Dr. Sarah Jenkins, MD</strong>
+                        <span style="font-size:9.5px; color:#64748b;">CONSULTANT CARDIOLOGIST / ICU DIRECTOR</span>
+                    </div>
+                </div>
+
+                <div style="text-align:center; font-size:9.5px; color:#94a3b8; border-top:1px dashed #e2e8f0; padding-top:4px;">
+                    -------------- End Of The Report --------------
+                </div>
+
+                <!-- 7. Footer Red Banner -->
+                <div style="margin-top:8px; border-top:1px solid #e2e8f0; padding-top:4px; display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:#64748b;">
+                    <div>Please Correlate With Clinical Findings If Necessary. This is an Electronically Authenticated Report</div>
+                    <div>Page 1 of 1</div>
+                </div>
+
+                <div style="background:#dc2626; color:#ffffff; padding:6px 14px; margin:-2px -22px -18px -22px; border-radius:0 0 6px 6px; display:flex; justify-content:space-between; align-items:center; font-size:10.5px;">
+                    <div>📍 AMMA ICU SENTINEL, Pillar No. A1478, Hyderabad - 500036 | ✉️ info@ammahospital.com</div>
+                    <div style="font-weight:800; font-size:11.5px; letter-spacing:0.8px; background:#ffffff; color:#dc2626; padding:1px 6px; border-radius:3px;">LAB REPORT</div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Controls (Screen only) -->
+            <div class="modal-footer no-print" style="background:#0f172a; border-top:1px solid #1e293b; padding:10px 16px; display:flex; justify-content:space-between;">
+                <div>
+                    <button class="btn btn-emerald" onclick="printClinicalReport()"><i class="fa-solid fa-print"></i> Print / Save PDF Report</button>
+                    <button class="btn btn-secondary" onclick="exportClinicalReportTXT()"><i class="fa-solid fa-download"></i> Export (.TXT Summary)</button>
+                </div>
+                <button class="btn btn-secondary" onclick="closeClinicalReportModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Resolution Modal -->
+    <div class="report-modal-overlay hidden" id="alertResolutionModal">
+        <div class="settings-card modal-card-sm" style="max-width:540px; background:rgba(8, 16, 30, 0.95); border:1px solid rgba(0, 243, 255, 0.4); box-shadow:0 20px 60px rgba(0,0,0,0.8); border-radius:18px; padding:24px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px; margin-bottom:16px;">
+                <h3 style="margin:0; font-size:17px; color:#ffffff; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-circle-check text-emerald"></i> Resolve Active Clinical Alert
+                </h3>
+                <button class="btn-icon" onclick="closeResolveAlertModal()" style="border:none; background:transparent; color:#94a3b8; cursor:pointer;"><i class="fa-solid fa-xmark fa-lg"></i></button>
+            </div>
+
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+                <div class="alert-summary-banner" id="resAlertTargetBanner" style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:12px; font-size:13px; color:#ffffff;">
+                    <!-- Alert target summary injected here -->
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size:13px; color:#e2e8f0; font-weight:600;"><i class="fa-solid fa-notes-medical text-cyan"></i> Clinical Resolution Note (Required):</label>
+                    <textarea class="form-control" id="txtResolutionNote" rows="3" placeholder="e.g. Patient assessed by Nurse Priya. Oxygen therapy adjusted to 4L/min. SpO₂ returned to 97% baseline." style="width:100%; border-radius:8px; padding:10px; font-size:13px; margin-top:6px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size:12px; color:#94a3b8;"><i class="fa-solid fa-user-check"></i> Clinician Sign-off:</label>
+                    <input type="text" class="form-control" id="txtResolverName" value="Nurse Emily Watson, RN" style="width:100%; border-radius:8px; padding:8px 12px; font-size:13px; margin-top:4px;">
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+                <button class="btn btn-secondary" onclick="closeResolveAlertModal()">Cancel</button>
+                <button class="btn btn-emerald" onclick="submitAlertResolution()"><i class="fa-solid fa-check-double"></i> Submit Resolution</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Timeline History Modal -->
+    <div class="report-modal-overlay hidden" id="alertHistoryModal">
+        <div class="settings-card modal-card-sm" style="max-width:680px; background:rgba(8, 16, 30, 0.95); border:1px solid rgba(0, 243, 255, 0.4); box-shadow:0 20px 60px rgba(0,0,0,0.8); border-radius:18px; padding:24px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px; margin-bottom:16px;">
+                <h3 style="margin:0; font-size:17px; color:#ffffff; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-timeline text-cyan"></i> Alert Lifecycle & Event Audit History
+                </h3>
+                <button class="btn-icon" onclick="closeAlertHistoryModal()" style="border:none; background:transparent; color:#94a3b8; cursor:pointer;"><i class="fa-solid fa-xmark fa-lg"></i></button>
+            </div>
+
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+                <div class="alert-summary-banner" id="histAlertTargetBanner" style="background:rgba(0, 243, 255, 0.08); border:1px solid rgba(0, 243, 255, 0.25); border-radius:10px; padding:12px; font-size:13px; color:#ffffff;">
+                    <!-- Target banner -->
+                </div>
+
+                <div class="history-timeline-container" id="alertHistoryTimelineFeed" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; padding-right:4px;">
+                    <!-- Timeline events injected here -->
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; margin-top:18px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+                <button class="btn btn-secondary" onclick="closeAlertHistoryModal()">Close Timeline</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
