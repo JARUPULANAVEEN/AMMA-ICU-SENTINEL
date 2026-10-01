@@ -14,6 +14,52 @@
 
 ---
 
+## 📊 Real-World CSV Data Pipeline & Custom Dataset Execution
+
+The data ingestion engine (`backend/csv_loader.py`) replaces synthetic/hardcoded mock data with a dynamic real-world CSV loader.
+
+### Features of the CSV Data Engine:
+- **Dynamic Schema Alignment**: Automatically maps column aliases (`heart_rate` ➔ `hr`, `oxygen_saturation` ➔ `spo2`, `systolic_bp` ➔ `sys_bp`, `diastolic_bp` ➔ `dia_bp`, `respiratory_rate` ➔ `rr`, `signal_quality` ➔ `sqi`, etc.).
+- **Input Validation & Imputation**: Handles missing/malformed rows cleanly by imputing median values and clipping physiological outliers.
+- **Scalable Chunked Streaming**: Supports streaming parsing via `chunksize` for large multi-gigabyte time-series monitoring datasets.
+- **Configurable Dataset Path**: Run the system with any custom `.csv` monitoring dataset via CLI arguments or environment variables.
+
+---
+
+## 🚀 Usage Instructions: Running with a Custom CSV Dataset
+
+### 1. Execute via Command-Line Arguments (`--data_path` / `-d`):
+```bash
+# Run Flask backend with a custom real-world monitoring dataset
+python backend/app.py --data_path path/to/your_monitoring_data.csv --port 5000
+
+# Or run via root entry point
+python app.py -d data/telemetry_dataset.csv --port 5000 --chunksize 10000
+```
+
+### 2. Execute via Environment Variable (`DATA_PATH`):
+```bash
+# Windows PowerShell:
+$env:DATA_PATH="path/to/your_monitoring_data.csv"
+python app.py
+
+# macOS / Linux:
+export DATA_PATH="path/to/your_monitoring_data.csv"
+python app.py
+```
+
+### 3. CLI Command Options:
+```
+options:
+  -h, --help            Show help message and exit
+  -d, --data_path DATA_PATH Path to real-world monitoring dataset .csv file
+  -p, --port PORT       Port to run Flask server on (default: 5000)
+  --host HOST           Host interface (default: 127.0.0.1)
+  --chunksize CHUNKSIZE Chunksize for scalable CSV parsing (default: 5000)
+```
+
+---
+
 ## ✨ Key Features
 
 ### 1. 🚨 3-Tiered Smart Alarm & Centralized Alert Messaging System
@@ -54,71 +100,21 @@
 
 ---
 
-## 🛏️ Live ICU Telemetry Sync (4-Bed Core Schema)
-
-| Bed ID | Patient Name | Demographics & Diagnosis | Primary Telemetry Trigger | Severity | Assigned Clinician |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **BED 101** | `John Doe` | 64M • Cardiac Post-Op | BP Surge (158/92 mmHg) | 🟡 WARNING | Dr. Sharma / Nurse Priya |
-| **BED 102** | `Sarah C.` | 52F • COPD Severe Baseline | SpO₂ Dip (86% Low O₂) | 🟠 URGENT | Dr. Sharma / Nurse Rahul |
-| **BED 103** | `Robert M.` | 71M • Sepsis Telemetry | Heart Rate (142 bpm Tachycardia) | 🔴 CRITICAL | Dr. Sharma / Nurse Rahul |
-| **BED 104** | `Elena R.` | 45F • Acute Trauma ICU | Resp Rate (22 bpm Trend) | 🔵 ADVISORY | Dr. Sharma / Nurse Anil |
-
----
-
 ## 🛠️ System Architecture & Tech Stack
 
 ```mermaid
 flowchart TD
-    A["ICU Patient Monitors (Beds 101-104)"] -->|Vitals Stream| B["Flask REST API Backend (app.py)"]
-    B --> C["Machine Learning & SHAP Engine"]
-    B --> D["Hospital Records Dataset (hospital_records.csv)"]
-    C --> E["3-Tiered Alarm Rules & Escalation Timer"]
-    E --> F["Role-Based Dispatcher (App.js)"]
+    A["Real-World Monitoring Dataset (.csv)"] -->|CLI --data_path / Env DATA_PATH| B["CSVTelemetryDataLoader Engine (csv_loader.py)"]
+    B -->|Chunked Parsing & Input Validation| C["Flask REST API Backend (app.py)"]
+    C --> D["Machine Learning & SHAP Analytics Engine"]
+    D --> E["3-Tiered Alarm Rules & Escalation Timer"]
+    E --> F["Role-Based Dispatcher (app.js)"]
     F --> G["Active Doctor / Nurse Dashboard (index.html)"]
 ```
 
 - **Frontend**: HTML5, CSS3 (Glassmorphic Medical Theme, Custom Utility Framework), JavaScript (ES6+ Modular Architecture, Chart.js, FontAwesome 6).
-- **Backend API**: Python 3.9+, Flask Web Framework, RESTful JSON Endpoints (`/api/beds`, `/api/alerts`).
+- **Backend API**: Python 3.9+, Flask Web Framework, RESTful JSON Endpoints (`/api/beds`, `/api/telemetry`, `/api/predict`, `/api/records`).
 - **Data & AI Stack**: Pandas, NumPy, Scikit-Learn (Random Forest Classifier), SHAP (SHapley Additive exPlanations).
-
----
-
-## 🚀 Quick Start & Installation
-
-### Prerequisites
-- Python 3.9 or higher
-- Modern Web Browser (Chrome, Edge, Firefox, Safari)
-- Git
-
-### 1. Clone Repository
-```bash
-git clone https://github.com/YOUR_USERNAME/icu-smart-alarm.git
-cd icu-smart-alarm
-```
-
-### 2. Set Up Virtual Environment & Install Dependencies
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-# Install requirements
-pip install flask pandas numpy scikit-learn shap
-```
-
-### 3. Launch the Backend Server
-```bash
-python app.py
-```
-*The Flask server will start at `http://127.0.0.1:5000`.*
-
-### 4. Launch the Clinical Portal
-Open `index.html` directly in your browser or serve via any static web server (e.g. Live Server extension in VS Code).
 
 ---
 
@@ -126,26 +122,20 @@ Open `index.html` directly in your browser or serve via any static web server (e
 
 ```
 icu-smart-alarm/
-├── app.py                      # Flask RESTful Backend API & ML inference server
-├── hospital_records.csv        # Core EHR patient records & telemetry database
-├── index.html                  # Main Clinical Portal interface
-├── app.js                      # Application controller, telemetry loop & 3-tier alarm manager
-├── styles.css                  # UI styling, glassmorphism theme & light/dark mode overrides
+├── app.py                      # Root entry point with CLI argument support (--data_path)
+├── backend/
+│   ├── app.py                  # Flask RESTful Backend API & ML inference server
+│   └── csv_loader.py           # Real-world CSV Data Loader engine (chunked parsing & validation)
+├── data/
+│   ├── telemetry_dataset.csv   # Real-world time-series ICU monitoring dataset
+│   └── hospital_records.csv    # Core EHR patient records & audit database
+├── Frontend/
+│   ├── index.html              # Main Clinical Portal interface
+│   ├── app.js                  # Application controller, telemetry loop & 3-tier alarm manager
+│   └── styles.css              # UI styling, glassmorphism theme & light/dark mode overrides
 ├── README.md                   # System documentation & GitHub project manual
 └── requirements.txt            # Python dependencies list
 ```
-
----
-
-## 🤝 Clinical Workflow & Verification
-
-1. **Login**: Select clinician profile (`Dr. Sharma`, `Nurse Priya`, `Nurse Rahul`, etc.).
-2. **Telemetry Dashboard**: Monitor real-time vitals update across assigned beds.
-3. **Alert Actioning**:
-   - Click `[ Acknowledge ]` to take ownership of an active alert.
-   - Click `[ Escalate ]` to transfer urgent alerts to the Charge Nurse/Doctor team.
-   - Click `[ Resolve ]` upon completing intervention to clear the alarm.
-4. **SHAP AI Inspection**: Open patient risk breakdown modal to inspect contributing physiological risk factors.
 
 ---
 
