@@ -4,6 +4,8 @@ AMMA ICU SENTINEL - Real-World Monitoring CSV Data Loader Engine
 ==============================================================================
 Provides robust, scalable, streaming/chunked CSV parsing, schema normalization,
 input validation, missing value imputation, and clinical telemetry streaming.
+Supports custom fields: Timestamp, Patient_ID, Patient_Name, Doctor_ID, Doctor_Name,
+Nurse_ID, Nurse_Name, Gravity_Field, Antigravity_Index.
 """
 
 import os
@@ -17,7 +19,7 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger("CSVDataLoader")
 
-# Default Standard Clinical Telemetry Schema
+# Default Standard & Extended Clinical Telemetry Schema Mapping
 SCHEMA_MAPPING = {
     'heart_rate': 'hr',
     'hr': 'hr',
@@ -49,13 +51,19 @@ SCHEMA_MAPPING = {
     'patient': 'patient_name',
     'patient_name': 'patient_name',
     'patient_id': 'patient_id',
+    'doctor_id': 'doctor_id',
+    'doctor_name': 'doctor_name',
+    'nurse_id': 'nurse_id',
+    'nurse_name': 'nurse_name',
+    'gravity_field': 'gravity_field',
+    'antigravity_index': 'antigravity_index',
     'diagnosis': 'diagnosis',
     'time': 'timestamp',
     'timestamp': 'timestamp',
     'date': 'timestamp'
 }
 
-# Physiological Normalization & Imputation Fallbacks
+# Physiological & Extended Field Normalization Defaults
 CLINICAL_DEFAULTS = {
     'hr': 75.0,
     'spo2': 98.0,
@@ -66,9 +74,15 @@ CLINICAL_DEFAULTS = {
     'temp': 37.0,
     'lactate': 1.2,
     'map': 93.3,
+    'gravity_field': 9.81,
+    'antigravity_index': 5.0,
     'bed_id': '101',
-    'patient_name': 'ICU Patient',
-    'patient_id': 'ICU-101',
+    'patient_name': 'John Doe',
+    'patient_id': 'P101',
+    'doctor_id': 'DOC502',
+    'doctor_name': 'Dr. Sarah Connor',
+    'nurse_id': 'NUR304',
+    'nurse_name': 'Nurse Alex Smith',
     'diagnosis': 'ICU Telemetry Monitoring'
 }
 
@@ -106,12 +120,12 @@ class CSVTelemetryDataLoader:
         if env_path and os.path.exists(env_path):
             return os.path.abspath(env_path)
 
-        # Default fallback candidates in project workspace
         candidates = [
+            os.path.join(os.getcwd(), "data", "antigravity_dataset.csv"),
             os.path.join(os.getcwd(), "data", "telemetry_dataset.csv"),
             os.path.join(os.getcwd(), "data", "hospital_records.csv"),
-            os.path.join(os.path.dirname(__file__), "..", "data", "telemetry_dataset.csv"),
-            os.path.join(os.path.dirname(__file__), "..", "data", "hospital_records.csv")
+            os.path.join(os.path.dirname(__file__), "..", "data", "antigravity_dataset.csv"),
+            os.path.join(os.path.dirname(__file__), "..", "data", "telemetry_dataset.csv")
         ]
 
         for cand in candidates:
@@ -131,7 +145,6 @@ class CSVTelemetryDataLoader:
 
         try:
             chunks = []
-            # Scalable streaming/chunked loading using pandas read_csv
             for chunk in pd.read_csv(self.data_path, chunksize=self.chunksize, skipinitialspace=True):
                 normalized_chunk = self._normalize_and_validate_chunk(chunk)
                 if not normalized_chunk.empty:
@@ -157,7 +170,6 @@ class CSVTelemetryDataLoader:
         Standardizes column names, validates data types, handles missing values,
         and enforces physiological safety bounds.
         """
-        # Normalize column header names
         col_rename = {}
         for col in chunk.columns:
             clean_col = str(col).strip().lower()
@@ -176,8 +188,15 @@ class CSVTelemetryDataLoader:
         else:
             chunk['timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+        # Extract bed_id from patient_id if bed_id is missing (e.g. P101 -> 101)
+        if 'bed_id' not in chunk.columns or chunk['bed_id'].isnull().all():
+            if 'patient_id' in chunk.columns:
+                chunk['bed_id'] = chunk['patient_id'].astype(str).str.extract(r'(\d+)')[0].fillna('101')
+            else:
+                chunk['bed_id'] = '101'
+
         # Ensure numeric columns are cast properly & impute missing rows
-        numeric_cols = ['hr', 'spo2', 'sys_bp', 'dia_bp', 'rr', 'sqi', 'temp', 'lactate', 'map']
+        numeric_cols = ['hr', 'spo2', 'sys_bp', 'dia_bp', 'rr', 'sqi', 'temp', 'lactate', 'map', 'gravity_field', 'antigravity_index']
         for col in numeric_cols:
             if col in chunk.columns:
                 chunk[col] = pd.to_numeric(chunk[col], errors='coerce')
@@ -186,13 +205,12 @@ class CSVTelemetryDataLoader:
             else:
                 chunk[col] = CLINICAL_DEFAULTS.get(col, 0.0)
 
-            # Physiological bounds validation (filter extreme outliers)
             if col in VALIDATION_BOUNDS:
                 min_b, max_b = VALIDATION_BOUNDS[col]
                 chunk[col] = chunk[col].clip(lower=min_b, upper=max_b)
 
         # Handle string columns
-        string_cols = ['bed_id', 'patient_name', 'patient_id', 'diagnosis']
+        string_cols = ['bed_id', 'patient_name', 'patient_id', 'doctor_id', 'doctor_name', 'nurse_id', 'nurse_name', 'diagnosis']
         for col in string_cols:
             if col in chunk.columns:
                 chunk[col] = chunk[col].astype(str).str.strip()
@@ -201,7 +219,6 @@ class CSVTelemetryDataLoader:
             else:
                 chunk[col] = CLINICAL_DEFAULTS.get(col, '')
 
-        # Standardize bed_id format (e.g., '101', 'BED 101' -> '101')
         chunk['bed_id'] = chunk['bed_id'].str.replace(r'(?i)bed\s*', '', regex=True)
 
         return chunk
@@ -212,7 +229,6 @@ class CSVTelemetryDataLoader:
         if self.df.empty:
             return
 
-        # Group by bed_id and extract the most recent valid record
         grouped = self.df.groupby('bed_id')
         for bed_key, group in grouped:
             latest = group.iloc[-1]
@@ -220,15 +236,25 @@ class CSVTelemetryDataLoader:
             bed_num = f"BED {bed_str}"
             patient_name = latest['patient_name'] if latest['patient_name'] else f"ICU Patient {bed_str}"
             patient_id = latest['patient_id'] if latest['patient_id'] else f"ICU-{bed_str}"
-            diagnosis = latest['diagnosis'] if latest['diagnosis'] else "ICU Telemetry Monitoring"
+            doctor_name = latest['doctor_name'] if latest['doctor_name'] else "Dr. Sarah Connor"
+            nurse_name = latest['nurse_name'] if latest['nurse_name'] else "Nurse Alex Smith"
+            diagnosis = latest['diagnosis'] if latest['diagnosis'] else f"Attending: {doctor_name} | Nurse: {nurse_name}"
 
-            full_display_name = f"{patient_name} • {diagnosis}"
+            full_display_name = f"{patient_name} ({patient_id}) • {diagnosis}"
 
             self.beds_cache[bed_str] = {
                 "number": bed_num,
                 "name": full_display_name,
                 "patientId": patient_id,
                 "patientName": patient_name,
+                "doctorId": str(latest['doctor_id']),
+                "doctorName": doctor_name,
+                "attendingDoctor": doctor_name,
+                "nurseId": str(latest['nurse_id']),
+                "nurseName": nurse_name,
+                "assignedNurse": nurse_name,
+                "gravityField": float(round(latest['gravity_field'], 2)),
+                "antigravityIndex": float(round(latest['antigravity_index'], 2)),
                 "diagnosis": diagnosis,
                 "hr": int(round(latest['hr'])),
                 "spo2": int(round(latest['spo2'])),
@@ -261,37 +287,13 @@ class CSVTelemetryDataLoader:
         records = df_filtered.tail(limit).to_dict(orient='records')
         return records
 
-    def get_model_features(self) -> tuple:
-        """Extracts feature matrix X and targets y for downstream ML model training."""
-        if self.df is None or self.df.empty:
-            return pd.DataFrame(), pd.Series()
-
-        feature_cols = ['hr', 'sys_bp', 'dia_bp', 'spo2', 'rr', 'sqi', 'temp', 'lactate', 'map']
-        for col in feature_cols:
-            if col not in self.df.columns:
-                self.df[col] = CLINICAL_DEFAULTS.get(col, 0.0)
-
-        X = self.df[feature_cols]
-
-        # Calculate synthetic risk target if missing (e.g. SpO2 < 90 or HR > 120 or SysBP > 140)
-        if 'alarm_trigger' in self.df.columns:
-            y = self.df['alarm_trigger'].astype(str).str.upper().isin(['TRUE', '1', 'YES']).astype(int)
-        else:
-            y = ((X['spo2'] < 90) | (X['hr'] > 120) | (X['sys_bp'] > 140)).astype(int)
-
-        return X, y
-
     def append_record(self, record_dict: dict) -> bool:
-        """Appends a new clinical telemetry or event record to the CSV dataset."""
+        """Appends a new record to the CSV dataset."""
         try:
             record_df = pd.DataFrame([record_dict])
             record_df = self._normalize_and_validate_chunk(record_df)
-            
-            # Append to file
             header = not os.path.exists(self.data_path) or os.path.getsize(self.data_path) == 0
             record_df.to_csv(self.data_path, mode='a', header=header, index=False)
-
-            # Reload internal dataframe state
             self.load_data()
             return True
         except Exception as e:

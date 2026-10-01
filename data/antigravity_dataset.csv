@@ -1,0 +1,5 @@
+Timestamp,Patient_ID,Patient_Name,Doctor_ID,Doctor_Name,Nurse_ID,Nurse_Name,Gravity_Field,Antigravity_Index,hr,spo2,sys_bp,dia_bp,rr,sqi
+2026-10-01 15:00:00,P101,John Doe,DOC502,Dr. Sarah Connor,NUR304,Nurse Alex Smith,9.81,5.2,72,98,120,80,16,96
+2026-10-01 15:15:00,P102,Jane Smith,DOC502,Dr. Sarah Connor,NUR305,Nurse Robert Miller,8.50,35.4,84,93,118,76,18,94
+2026-10-01 15:30:00,P103,Bruce Wayne,DOC509,Dr. Thomas Wayne,NUR304,Nurse Alex Smith,4.20,78.1,142,95,105,65,22,91
+2026-10-01 15:45:00,P104,Elena Rostova,DOC502,Dr. Sarah Connor,NUR305,Nurse Robert Miller,9.78,12.6,68,99,124,82,14,98
